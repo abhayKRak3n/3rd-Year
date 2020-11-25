@@ -1,0 +1,102 @@
+;;;;;;;;;Q1   
+
+        xor r9,r9,r9            ; clear r9
+        add #4,r0,r9            ; inp_int = 4
+max:                            ; int max (int a, int b, int c) parameters a:r26, b:r27, c:r28
+        add r26,r0,r1           ; r1 = a
+        sub r27,r1,r0 {C}       ; if (b > r1)
+        jle max0               
+        xor r0,r0,r0            ; clear r0           
+        add r27,r0,r1           ; r1 = b
+
+max0:   sub r28,r1,r0 {C}       ; if (c > r1)
+        jle max1
+        xor r0,r0,r0    
+        add r28,r0,r1           ; r1 = c
+
+max1:   ret r1,0                ; return r1 as result
+        xor r0,r0,r0
+
+
+max5:                           ; int max5(int i, int j, int k, int l)
+        add r9,r0,r10           ; set up inp_int
+        add r26,r0,r11          ; set up i
+        add r27,r0,r12          ; set up j
+        callr r31, max          ; call max (ret address in r25)
+        xor r0,r0 r0            ; clear r0
+        add r1,r0,r10           ; set result from first call
+        add r28,r0,r11          ; set up k
+        add r29,r0,r12          ; set up l
+        callr r31, max          ; call max
+        xor r0,r0,r0            ; clear r0
+        ret r1,0                ; return result in r1
+        xor r0,r0,r0            
+
+
+;;;;;;;;Q2
+
+fun:                            ; int fun (int a, int b)
+        sub r27,r0,r0 {C}       ; if (b == 0)
+        jeq fun0
+        add r26,r0,r9           ; load a in r9
+        add r27,r0,r10          ; setup b in r10
+        callr r31,mod           ; call mod function            
+        add #2,r0,r10           ; setup #2 in delay slot
+        add r1,r0,r8            ; r8 = b%2
+
+        add r9,r9,r16           ; r16 = a+a
+        add r27,r0,r10          ; setup first argument
+        callr r31,div           ; call b/2
+        add #2,r0,r10           ; setup #2 in delay slot
+        add r1,r0,r17           ; save b/2 in r17
+
+        sub r8,r0,r0 {C}        ; if (b % 2 == 0)
+        jne fun1
+        add r16,r0,r10          ; setup first param          
+        callr r31, fun          ; return fun(a+a, b/2)
+        add r17,r0,r10          ; setup 2nd parameter in delay slot
+                    
+fun1:   add r16,r0,r10          ; setup first param          
+        callr r31, fun          ; call fun(a+a, b/2)
+        add r17,r0,r10          ; setup 2nd parameter in delay slot   
+        add r26,r1,r1           ; fun(a+a, b/2) + a
+
+fun0:   ret r1,r0               ; return 0
+        xor r0,r0,r0
+
+
+;;;;;;;;;Q3
+//overflow function
+
+at entry:
+
+        depth++;
+        if(depth>maxDepth){
+                maxDepth=depth;
+        }
+        if(windowsUsed==nWindows){
+                overflows++;
+        }
+        else{
+                windowsUsed++;
+        }
+
+
+//underflow function
+at exit"
+
+        depth--;
+        if(windowsUsed==2){
+                underflows++;
+        }
+        else{
+                windowsUsed--;
+        }
+
+//initialise as depth=0, maxDepth=0, overflows=0,underflows=0,windowsUsed=2 //
+
+
+;;;;;;;;Q4
+
+Average time : 0.98 seconds
+on running the code for compute_pascal the timer was an average for 0.98 seconds on a 2019 macbook air
