@@ -1,0 +1,77 @@
+CSU-34016 Examination
+Name : Abhay Singh Khanka
+Student Number : 18309999
+
+
+Q2 a)	
+hof func 'op' [] (x:xs) (y:ys) = (func x y) 'op' (hof func 'op' [] xs ys)
+hof _ _ _ _ _ = []
+
+
+b)
+f1 = hof + (:) [] (x:xs) (y:ys)
+f2 = hof ++ (:) [] (xs:xss) (ys:yss)
+f3 = hof * (:) [] (x:xs) (y:ys)
+f4 = hof funct (:) [] (x:xs) (y:ys) where funct = x+42
+f5 = hof funct (:) [] (x:xs) (y:ys) where funct = y - (x*x)
+
+
+c)
+zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+Consider the zipWith prelude function. It has the same argument and return type as our hof function and has the same functionality.
+
+
+
+Q3 a)
+When a multiply operation is called, there will be a haskell run time error as there is no multiply declared in the 
+given eval function. Another haskell run time error without pattern matching is when the result of an operation is declared
+to be out of memory. For example the divide function would return a number out of bounds for INT since there is no checking 
+for such a case.
+
+
+b)
+When a divide operation occurs where a number is divided by zero, we will have a haskell runtime pattern matching error as
+this error case has not been handled.
+Another example is when an expression contains a variable, however that variable is not present in the dictionary. This
+is another error case that also needs to be handled especially for a multiplication case.
+
+
+c) 
+eval :: (Monad m) => Dict -> Expr -> m Int
+eval _ (K i) = return i
+eval d (V s) = return i where i = lkp s d
+eval d (Mul e1 e2) = do
+    i1 <- eval d e1
+    i2 <- eval d e2
+    return $ i1 * i2
+eval d (Dvd e1 e2) = do
+    i1 <- eval d e1
+    i2 <- eval d e2
+    if i2 == 0 then
+        fail ("Division by zero")
+    else
+        return (x 'div' y)
+eval d (Let v e1 e2) = do
+    i <- eval d e1
+    i2 <- eval (ins v i d) e2
+    return i2
+
+
+
+Q4 a)
+We need to prove that 
+len(rev as) == len as
+Reducing on LHS
+=> len(rev as)
+=> len(rev as:[])
+=> len(rev[] ++ [as])    	 -- as rev (x:xs) = rev xs ++ [x]
+=> len (as) == RHS		 -- as rev [] = [] and empty list + as gives us as itself
+Hence proved.
+
+b)
+fileToUpperCase =
+      do     text <- readFile ("files.txt")
+             writeFile ("SHOUT.log") (toUpper text)
+             putStr "Done."
+
+
